@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "11827909037",
+    "project_id": "equipos-argentinos",
+    "storage_bucket": "equipos-argentinos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11827909037:android:5778f0679397b9b44b9124",
+        "android_client_info": {
+          "package_name": "com.example.equiposargentinos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11827909037-r8aj56bjifls7btggvh4j3c03ug6fc2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmR2uDD4D8BTLwtHjEt7KXFpHpVZvEezA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11827909037-r8aj56bjifls7btggvh4j3c03ug6fc2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
