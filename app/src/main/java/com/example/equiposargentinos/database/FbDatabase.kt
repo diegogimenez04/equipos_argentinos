@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.equiposargentinos.Team
 
-/*
+
 @Database(entities = [Team::class], version = 1)
 abstract class FbDatabase: RoomDatabase() {
     abstract val fbDao: FbDao
@@ -26,4 +26,3 @@ fun getDatabase(context: Context): FbDatabase{
         return INSTANCE
     }
 }
-*/

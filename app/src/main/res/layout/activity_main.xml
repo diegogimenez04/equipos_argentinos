@@ -7,6 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="RtlSymmetry, UsingOnClickInXml, RtlHardcoded">
 
+    <!--
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -46,11 +47,12 @@
                 android:layout_weight="5" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+    android:layout_below="@+id/my_toolbar"
+    -->
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/my_toolbar">
+        android:layout_height="wrap_content">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/main_navigation_container"

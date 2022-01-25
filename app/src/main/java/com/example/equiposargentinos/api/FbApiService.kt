@@ -15,5 +15,3 @@ private var retrofit = Retrofit.Builder()
     .build()
 
 var service: EqApiService = retrofit.create(EqApiService::class.java)
-
-//https://www.thesportsdb.com/api/v1/json/2/search_all_teams.php?l=Argentinian%20Primera%20Division
