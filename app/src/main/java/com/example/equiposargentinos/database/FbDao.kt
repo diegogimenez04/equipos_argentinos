@@ -1,5 +1,6 @@
 package com.example.equiposargentinos.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.equiposargentinos.Team
 
@@ -9,11 +10,14 @@ interface FbDao {
     fun insertAll(fbList: MutableList<Team>)
 
     @Query("SELECT * FROM teams")
-    fun getAllTeams(): MutableList<Team>
+    fun getAllTeams(): LiveData<MutableList<Team>>
+
+    @Query("SELECT * FROM teams WHERE strTeam LIKE :nombre")
+    fun getTeamsByName(nombre: String): MutableList<Team>
 
     @Update
-    fun updateEq(vararg tm: Team)
+    fun updateFb(vararg tm: Team)
 
     @Delete
-    fun deleteEq(vararg tm: Team)
+    fun deleteFb(vararg tm: Team)
 }

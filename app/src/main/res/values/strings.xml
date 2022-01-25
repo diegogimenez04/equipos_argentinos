@@ -17,4 +17,6 @@
     <string name="escudo_del_equipo">Escudo del equipo</string>
     <string name="stadium_location">Queda en: %s</string>
     <string name="stadium_cap">Capacidad %s personas</string>
+    <string name="stadium_image">Stadium image</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

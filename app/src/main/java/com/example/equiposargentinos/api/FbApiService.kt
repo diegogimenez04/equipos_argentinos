@@ -5,7 +5,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
 interface EqApiService {
-    @GET("search_all_teams.php?l=Argentinian%20Primera%20Division")
+    @GET("search_all_teams.php?s=Soccer&c=Argentina")
     suspend fun getTeams(): FbJsonResponse
 }
 

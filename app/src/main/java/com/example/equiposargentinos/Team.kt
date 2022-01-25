@@ -9,4 +9,5 @@ import kotlinx.parcelize.Parcelize
 data class Team(@PrimaryKey val idTeam: Int, val strTeam: String, val strTeamShort: String,
                 val strStadium: String, val strStadiumThumb: String,
                 val strStadiumLocation: String, val intStadiumCapacity: Int,
-                val strWebsite: String, val strTeamBadge: String): Parcelable
+                val strWebsite: String, val strTeamBadge: String,
+                val pref: Boolean): Parcelable

@@ -1,7 +1,7 @@
 package com.example.equiposargentinos
 
+import android.app.SearchManager
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,8 +15,16 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import android.content.Intent
+import android.net.Uri
+import androidx.core.net.toUri
 
-class DetailFragment : Fragment() {
+
+class DetailFragment : Fragment(), OnMapReadyCallback {
+    private lateinit var mMap: GoogleMap
     private val args: DetailFragmentArgs by navArgs()
 
     lateinit var teamName: TextView
@@ -32,21 +40,30 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_detail, container, false)
 
         val team = args.team
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         teamName = rootView.findViewById<TextView>(R.id.lbl_name)
         abrv = rootView.findViewById<TextView>(R.id.lbl_abrv)
         stadiumName = rootView.findViewById<TextView>(R.id.lbl_stadium_name)
         stadiumImg = rootView.findViewById<ImageView>(R.id.img_stadium)
-        stadiumLoc = rootView.findViewById<TextView>(R.id.lbl_stadium_location)
-        stadiumCap =    rootView.findViewById<TextView>(R.id.lbl_stadium_cap)
+        stadiumLoc = rootView.findViewById<TextView>(R.id.lbl_stadium_loc)
+        stadiumCap = rootView.findViewById<TextView>(R.id.lbl_stadium_cap)
         stadiumWebsite = rootView.findViewById<TextView>(R.id.lbl_webpage)
         teamBadge = rootView.findViewById<ImageView>(R.id.img_crest)
 
         setTeamData(team)
+
+        stadiumWebsite.setOnClickListener {
+            val uri: Uri = Uri.parse(team.strWebsite)
+
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            requireActivity().startActivity(intent)
+        }
 
         return rootView
     }
@@ -54,7 +71,7 @@ class DetailFragment : Fragment() {
     private fun setTeamData(team: Team) {
         Glide.with(this)
             .load(team.strTeamBadge)
-            .listener(object: RequestListener<Drawable> {
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -80,7 +97,7 @@ class DetailFragment : Fragment() {
 
         Glide.with(this)
             .load(team.strStadiumThumb)
-            .listener(object: RequestListener<Drawable> {
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -89,6 +106,7 @@ class DetailFragment : Fragment() {
                 ): Boolean {
                     return false
                 }
+
                 override fun onResourceReady(
                     resource: Drawable?,
                     model: Any?,
@@ -108,5 +126,12 @@ class DetailFragment : Fragment() {
         stadiumCap.text = getString(R.string.stadium_cap, team.intStadiumCapacity.toString())
         abrv.text = team.strTeamShort
         stadiumWebsite.text = team.strWebsite
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        mMap = map
+        val stadium = LatLng(10.0, 100.0)
+        mMap.addMarker(MarkerOptions().position(stadium).title(stadiumName.text.toString()))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stadium, 0.0f))
     }
 }

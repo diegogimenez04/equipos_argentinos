@@ -3,117 +3,142 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".DetailedActivity"
-        tools:ignore="RtlSymmetry">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="8dp">
-            <ImageView
-                android:id="@+id/img_crest"
+            android:orientation="vertical"
+            tools:context=".DetailedActivity"
+            tools:ignore="RtlSymmetry">
+
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
-                android:layout_margin="8dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/escudo_del_equipo"
-                android:src="@color/black" />
-        </com.google.android.material.card.MaterialCardView>
+                android:layout_height="wrap_content"
+                app:cardElevation="8dp">
 
-        <TextView
-            android:id="@+id/lbl_abrv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:paddingStart="28dp"
-            tools:text="ARS"/>
-
-        <TextView
-            android:id="@+id/lbl_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingStart="28dp"
-            tools:text="Arsenal"
-            />
-
-        <TextView
-            android:id="@+id/lbl_webpage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingStart="28dp"
-            android:text="@string/toca_aqui_para_acceder_a_la_pagina_web" />
-
-        <ImageView
-            android:id="@+id/img_stadium"
-            android:layout_width="match_parent"
-            android:layout_height="120sp"
-            tools:src="@color/black"
-            android:layout_marginTop="16dp"
-            android:contentDescription="Stadium image" />
-
-        <TextView
-            android:id="@+id/lbl_stadium_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Estadio Julio Cesar Villagra"
-            android:textSize="16sp"
-            android:paddingStart="28dp"
-            android:layout_marginTop="24dp"/>
-
-        <TextView
-            android:id="@+id/lbl_stadium_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/stadium_location"
-            tools:text="Santiago del estero..."
-            android:layout_marginTop="8dp"
-            android:paddingStart="28dp"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/lbl_stadium_cap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Capacidad de 70000 personas"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:paddingStart="28dp"/>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/return_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
+                <ImageView
+                    android:id="@+id/img_crest"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:layout_margin="8dp"
+                    android:contentDescription="@string/escudo_del_equipo"
+                    android:scaleType="centerCrop"
+                    android:src="@color/black" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
+                android:id="@+id/lbl_abrv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginVertical="10dp"
-                android:layout_marginHorizontal="30dp"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:text="@string/volver"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="28dp"
+                android:textSize="20sp"
+                tools:text="ARS" />
+
+            <TextView
+                android:id="@+id/lbl_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="28dp"
+                android:textColor="@color/black"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textAllCaps="true"/>
+                tools:text="Arsenal" />
+
+            <TextView
+                android:id="@+id/lbl_webpage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="28dp"
+                android:text="@string/toca_aqui_para_acceder_a_la_pagina_web"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/img_stadium"
+                android:layout_width="match_parent"
+                android:layout_height="120sp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/stadium_image"
+                tools:src="@color/black" />
+
+            <TextView
+                android:id="@+id/lbl_stadium_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingStart="28dp"
+                android:textSize="16sp"
+                tools:text="Estadio Julio Cesar Villagra" />
+
+            <!--xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"-->
+
+            <TextView
+                android:id="@+id/lbl_stadium_loc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="28dp"
+                android:textSize="16sp"
+                tools:text="Queda en Santiago del estero" />
 
 
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                tools:context=".MapsActivity" />
 
-        </com.google.android.material.card.MaterialCardView>
+            <!--
+            <com.google.android.gms.maps.MapView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            -->
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/lbl_stadium_cap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="28dp"
+                android:textSize="16sp"
+                tools:text="Capacidad de 70000 personas" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/return_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:backgroundTint="@color/green"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:gravity="center"
+                    android:text="@string/volver"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+    </ScrollView>
+
 </layout>
