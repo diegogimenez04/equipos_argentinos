@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.equiposargentinos.databinding.ListItemBinding
+import kotlinx.coroutines.currentCoroutineContext
+import kotlin.coroutines.coroutineContext
 
+val TAG = FbAdapter::class.java.simpleName
 class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
 
     companion object DiffCallBack : DiffUtil.ItemCallback<Team>() {
@@ -27,6 +31,7 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
     }
 
     lateinit var onItemClickListener: (Team) -> Unit
+    lateinit var onFavClickListener: (Team) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FbViewHolder {
         val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -75,7 +80,17 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
                 if (::onItemClickListener.isInitialized){
                     onItemClickListener(team)
                 } else
-                    Log.d("ADAPTER", "onItemClickListener not initialized")
+                    Log.d(TAG, "onItemClickListener not initialized")
+            }
+
+            binding.btnFav.setOnClickListener {
+                if (::onFavClickListener.isInitialized){
+                    team.pref = !team.pref
+                    if (team.pref) Log.d(TAG, "Added to favorites")
+                    else Log.d(TAG, "Removed to favorites")
+                    onFavClickListener(team)
+                } else
+                    Log.d(TAG, "onFavClickListener not initialized")
             }
 
             binding.executePendingBindings()

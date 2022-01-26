@@ -10,4 +10,4 @@ data class Team(@PrimaryKey val idTeam: Int, val strTeam: String, val strTeamSho
                 val strStadium: String, val strStadiumThumb: String,
                 val strStadiumLocation: String, val intStadiumCapacity: Int,
                 val strWebsite: String, val strTeamBadge: String,
-                val pref: Boolean): Parcelable
+                var pref: Boolean): Parcelable

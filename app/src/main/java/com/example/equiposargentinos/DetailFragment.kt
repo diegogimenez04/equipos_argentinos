@@ -19,12 +19,16 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.net.toUri
+import java.util.*
 
 
 class DetailFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
+    lateinit var geocoder: Geocoder
     private val args: DetailFragmentArgs by navArgs()
 
     lateinit var teamName: TextView
@@ -46,6 +50,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        geocoder = Geocoder(requireActivity(), Locale.getDefault())
 
         teamName = rootView.findViewById<TextView>(R.id.lbl_name)
         abrv = rootView.findViewById<TextView>(R.id.lbl_abrv)
@@ -59,9 +64,12 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
         setTeamData(team)
 
         stadiumWebsite.setOnClickListener {
-            val uri: Uri = Uri.parse(team.strWebsite)
+            var url = team.strWebsite
 
-            val intent = Intent(Intent.ACTION_VIEW, uri)
+            if(!url.startsWith("http://") && !url.startsWith("https://"))
+                url = "http://" + url
+
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
             requireActivity().startActivity(intent)
         }
 
@@ -130,8 +138,19 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         mMap = map
-        val stadium = LatLng(10.0, 100.0)
-        mMap.addMarker(MarkerOptions().position(stadium).title(stadiumName.text.toString()))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stadium, 0.0f))
+        val location = stadiumLoc.text.toString()
+        if (location.isNotEmpty()) {
+            val address = geocoder.getFromLocationName(location, 1).firstOrNull()
+            val stadium: LatLng
+            if (address != null){
+                stadium = LatLng(address.latitude, address.longitude)
+            } else {
+                stadium = LatLng(0.0, 0.0)
+                Toast.makeText(requireContext(), "Club has no stadium", Toast.LENGTH_LONG)
+                    .show()
+            }
+            mMap.addMarker(MarkerOptions().position(stadium).title(stadiumName.text.toString()))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stadium, 10.0f))
+        }
     }
 }

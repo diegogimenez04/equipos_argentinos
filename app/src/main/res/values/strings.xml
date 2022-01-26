@@ -19,4 +19,6 @@
     <string name="stadium_cap">Capacidad %s personas</string>
     <string name="stadium_image">Stadium image</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="fav_list">Fav List</string>
+    <string name="search">Search</string>
 </resources>

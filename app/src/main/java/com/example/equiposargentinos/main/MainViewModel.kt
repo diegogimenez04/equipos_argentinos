@@ -20,6 +20,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val status: LiveData<ApiResponseStatus>
         get() = _status
 
+    private val favTeamsToAdd = arrayListOf<Team>()
+    private val _favTeams = MutableLiveData<MutableList<Team>>()
+    val favTeams: LiveData<MutableList<Team>> = _favTeams
+
     /*private var _fbList = MutableLiveData<MutableList<Team>>()
     val fbList: LiveData<MutableList<Team>> = _fbList*/
     private var _searchList = MutableLiveData<MutableList<Team>>()
@@ -31,7 +35,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         reloadTeams()
     }
 
-    private fun reloadTeams() {
+    fun reloadTeams() {
         viewModelScope.launch {
             try {
                 _status.value = ApiResponseStatus.LOADING
@@ -45,10 +49,15 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-
     fun reloadTeamsWithName(name: String){
         viewModelScope.launch {
             _searchList.value = repository.fetchTeamsWithName(name)
         }
+    }
+
+    fun addFavTeam(team: Team){
+        favTeamsToAdd.add(team)
+        _favTeams.value = favTeamsToAdd
+
     }
 }
