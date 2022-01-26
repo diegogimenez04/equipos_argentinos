@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -46,6 +47,9 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
 
     inner class FbViewHolder(private val binding: ListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(team: Team) {
+            val favImg = binding.btnFav
+            if (team.pref) favImg.setImageResource(R.drawable.ic_fav)
+            else favImg.setImageResource(R.drawable.ic_unfav)
             binding.lblName.text = team.strTeam
             binding.lblAbrv.text = team.strTeamShort
 

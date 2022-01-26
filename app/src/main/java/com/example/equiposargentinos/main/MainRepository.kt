@@ -2,13 +2,15 @@ package com.example.equiposargentinos.main
 
 import androidx.lifecycle.LiveData
 import com.example.equiposargentinos.Team
+import com.example.equiposargentinos.User
 import com.example.equiposargentinos.api.FbJsonResponse
 import com.example.equiposargentinos.api.service
 import com.example.equiposargentinos.database.FbDatabase
+import com.example.equiposargentinos.database.UserDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MainRepository(private val database: FbDatabase) {
+class MainRepository(private val database: FbDatabase, private val userDatabase: UserDatabase) {
 
     val fbList: LiveData<MutableList<Team>> = database.fbDao.getAllTeams()
 
@@ -48,5 +50,12 @@ class MainRepository(private val database: FbDatabase) {
         }
 
         return fbList
+    }
+
+    suspend fun fetchUsers() {
+        return withContext(Dispatchers.IO) {
+            val userDao = userDatabase.userDao()
+            userDao.insertAll()
+        }
     }
 }

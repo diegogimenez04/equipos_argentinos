@@ -23,6 +23,7 @@ import android.location.Geocoder
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
+import java.lang.Exception
 import java.util.*
 
 
@@ -139,18 +140,23 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         mMap = map
         val location = stadiumLoc.text.toString()
-        if (location.isNotEmpty()) {
-            val address = geocoder.getFromLocationName(location, 1).firstOrNull()
-            val stadium: LatLng
-            if (address != null){
-                stadium = LatLng(address.latitude, address.longitude)
-            } else {
-                stadium = LatLng(0.0, 0.0)
-                Toast.makeText(requireContext(), "Club has no stadium", Toast.LENGTH_LONG)
-                    .show()
+        try {
+            if (location.isNotEmpty()) {
+                val address = geocoder.getFromLocationName(location, 1).firstOrNull()
+                val stadium: LatLng
+                if (address != null){
+                    stadium = LatLng(address.latitude, address.longitude)
+                } else {
+                    stadium = LatLng(0.0, 0.0)
+                    Toast.makeText(requireContext(), "Club has no stadium", Toast.LENGTH_LONG)
+                        .show()
+                }
+                mMap.addMarker(MarkerOptions().position(stadium).title(stadiumName.text.toString()))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stadium, 10.0f))
             }
-            mMap.addMarker(MarkerOptions().position(stadium).title(stadiumName.text.toString()))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stadium, 10.0f))
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "No internet connection", Toast.LENGTH_SHORT).show()
         }
+
     }
 }

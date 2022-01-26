@@ -13,14 +13,13 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.example.equiposargentinos.ListFragment
-import com.example.equiposargentinos.ListFragmentDirections
-import com.example.equiposargentinos.R
-import com.example.equiposargentinos.Team
+import com.example.equiposargentinos.*
 import com.example.equiposargentinos.login.LoginActivity
 import com.example.equiposargentinos.login.LoginViewModel
 
-class MainActivity : AppCompatActivity(), ListFragment.TeamSelectListener {
+class MainActivity : AppCompatActivity(),
+    ListFragment.TeamSelectListener, ListFragment.FavSelectListener,
+    FavoritesFragment.TeamSelectListener{
 
     private lateinit var favList: MutableList<Team>
     lateinit var viewModel: MainViewModel
@@ -36,6 +35,15 @@ class MainActivity : AppCompatActivity(), ListFragment.TeamSelectListener {
             .navigate(ListFragmentDirections.actionListFragmentToDetailFragment(team))
     }
 
+    override fun onFavSelected(viewModel: MainViewModel) {
+        favList = viewModel.favTeams.value ?: favList
+    }
+
+    override fun onFavTeamSelected(team: Team) {
+        findNavController(R.id.main_navigation_container)
+            .navigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(team))
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -48,11 +56,9 @@ class MainActivity : AppCompatActivity(), ListFragment.TeamSelectListener {
             viewModel.logout()
             startActivity(Intent(this, LoginActivity::class.java))
         } else if (itemId == R.id.btn_fav) {
-            val favTeams = viewModel.favTeams.value
-            if (favTeams != null){
-                favList = favTeams
+            if (::favList.isInitialized && favList.isNotEmpty()){
                 findNavController(R.id.main_navigation_container)
-                    .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment())
+                    .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment(favList.toTypedArray()))
             } else
                 Toast.makeText(this, "No favorites teams", Toast.LENGTH_SHORT).show()
         }

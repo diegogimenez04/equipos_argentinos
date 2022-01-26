@@ -58,7 +58,7 @@
                     android:id="@+id/btn_fav"
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/ic_fav"
+                    android:src="@drawable/ic_unfav"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="10dp"
