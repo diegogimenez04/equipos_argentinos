@@ -55,7 +55,7 @@ class FavoritesFragment : Fragment() {
         val adapter = FbAdapter()
         fbRecycler.adapter = adapter
 
-        adapter.submitList(favList.toMutableList())
+        //adapter.submitList(favList.toMutableList())
 
         adapter.onItemClickListener = {team ->
             teamSelectListener.onFavTeamSelected(team)

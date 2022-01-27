@@ -9,9 +9,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.equiposargentinos.Team
+import com.example.equiposargentinos.User
 import com.example.equiposargentinos.api.ApiResponseStatus
 import com.example.equiposargentinos.database.UserDatabase
 import com.example.equiposargentinos.database.getDatabase
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.net.UnknownHostException
@@ -29,12 +33,12 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val status: LiveData<ApiResponseStatus>
         get() = _status
 
-    private val favTeamsToAdd = arrayListOf<Team>()
-    private val _favTeams = MutableLiveData<MutableList<Team>>()
-    val favTeams: LiveData<MutableList<Team>> = _favTeams
+    val auth = Firebase.auth
+    val firebaseUser = auth.currentUser
 
-    /*private var _fbList = MutableLiveData<MutableList<Team>>()
-    val fbList: LiveData<MutableList<Team>> = _fbList*/
+    private val _user = MutableLiveData<User>()
+    val user: LiveData<User> = _user
+
     private var _searchList = MutableLiveData<MutableList<Team>>()
     val searchList: LiveData<MutableList<Team>> = _searchList
 
@@ -42,7 +46,41 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     init {
         reloadTeams()
-        reloadUser()
+        reloadUser(firebaseUser!!.uid)
+        logUsers()
+    }
+
+    fun handleFavorite(team: Team): Boolean {
+        var isFav = false
+        val favTms = _user.value?.favoritesTeams
+        if (favTms != null) {
+            isFav = checkFavs(team, favTms)
+            if (!isFav) {
+                addFavTeam(team)
+            } else {
+                substractFromFav(team)
+            }
+        } else {
+            addFavTeam(team)
+        }
+        return isFav
+    }
+
+    private fun checkFavs(team: Team, favTms: MutableList<Team>): Boolean {
+        var isFav = false
+        for (i in favTms) {
+            if (i == team && !isFav) {
+                isFav = true
+            }
+        }
+        return isFav
+    }
+
+    private fun logUsers() {
+        viewModelScope.launch {
+            repository.logUsers()
+            Log.d(TAG, "ViewModelUser: "+ _user.toString())
+        }
     }
 
     fun reloadTeams() {
@@ -61,7 +99,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     fun substractFromFav(team: Team){
         try {
-            _favTeams.value?.remove(team)
+            _user.value?.favoritesTeams?.remove(team)
         } catch (e: Exception) {
             Log.d(TAG, "_favTeams value is null")
         }
@@ -75,16 +113,17 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun addFavTeam(team: Team){
-        favTeamsToAdd.add(team)
-        _favTeams.value = favTeamsToAdd
-
+        _user.value?.favoritesTeams?.add(team)
+        logUsers()
     }
 
-    fun reloadUser() {
+    fun reloadUser(uid: String) {
         viewModelScope.launch {
             try {
-                //_fbList.value = repository.fetchTeams()
-                repository.fetchUsers()
+                _user.value = repository.fetchUser(uid)
+                if (_user.value == null) {
+                    repository.insertUser(User(uid, null, null))
+                }
             } catch (e: UnknownHostException) {
                 Log.d("MAINVIEWMODEL", "No internet connection.", e)
             }

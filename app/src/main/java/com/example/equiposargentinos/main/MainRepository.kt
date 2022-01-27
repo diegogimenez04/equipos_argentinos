@@ -1,5 +1,6 @@
 package com.example.equiposargentinos.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.equiposargentinos.Team
 import com.example.equiposargentinos.User
@@ -52,10 +53,28 @@ class MainRepository(private val database: FbDatabase, private val userDatabase:
         return fbList
     }
 
+    suspend fun logUsers() {
+        return withContext(Dispatchers.IO) {
+            Log.d("Log users", userDatabase.userDao().getAll().toString())
+        }
+    }
+
     suspend fun fetchUsers() {
         return withContext(Dispatchers.IO) {
             val userDao = userDatabase.userDao()
             userDao.insertAll()
+        }
+    }
+
+    suspend fun fetchUser(uid: String): User {
+        return withContext(Dispatchers.IO) {
+            userDatabase.userDao().loadById(uid)
+        }
+    }
+
+    suspend fun insertUser(user: User) {
+        return withContext(Dispatchers.IO) {
+            userDatabase.userDao().insertUser(user)
         }
     }
 }

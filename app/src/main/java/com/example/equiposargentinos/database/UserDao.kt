@@ -9,11 +9,14 @@ interface UserDao {
     @Query("SELECT * FROM user")
     fun getAll(): List<User>
 
-    @Query("SELECT * FROM user WHERE userId IN (:userIds)")
-    fun loadAllByIds(userIds: IntArray): LiveData<List<User>>
+    @Query("SELECT * FROM user WHERE userId LIKE (:userId)")
+    fun loadById(userId: String): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg users: User)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(vararg user: User)
 
     @Delete
     fun delete(user: User)

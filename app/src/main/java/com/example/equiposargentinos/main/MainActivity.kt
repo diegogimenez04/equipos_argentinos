@@ -36,32 +36,19 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFavSelected(viewModel: MainViewModel) {
-        favList = viewModel.favTeams.value ?: favList
+        if (viewModel.user.value?.favoritesTeams != null){
+            favList = viewModel.user.value?.favoritesTeams!!
+            Log.d(TAG, "favList is not empty")
+        }
+    }
+
+    fun onFavItemSelected(user: User){
+        findNavController(R.id.main_navigation_container)
+            .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment(user))
     }
 
     override fun onFavTeamSelected(team: Team) {
         findNavController(R.id.main_navigation_container)
             .navigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(team))
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
-        if (itemId == R.id.btn_logout){
-            val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-            viewModel.logout()
-            startActivity(Intent(this, LoginActivity::class.java))
-        } else if (itemId == R.id.btn_fav) {
-            if (::favList.isInitialized && favList.isNotEmpty()){
-                findNavController(R.id.main_navigation_container)
-                    .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment(favList.toTypedArray()))
-            } else
-                Toast.makeText(this, "No favorites teams", Toast.LENGTH_SHORT).show()
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
