@@ -28,7 +28,7 @@
         android:name="com.example.equiposargentinos.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
-        <argument android:name="favList" app:argType="com.example.equiposargentinos.Team[]" />
+        <!--<argument android:name="favList" app:argType="com.example.equiposargentinos.Team[]" />-->
         <action
             android:id="@+id/action_favoritesFragment_to_detailFragment"
             app:destination="@id/detailFragment" />

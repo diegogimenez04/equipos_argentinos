@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken
 data class User(@PrimaryKey val userId: String, val username: String? = null,
                 val favoritesTeams: List<Team>)
 
+data class FavoriteTeams(val favoritesTeams: List<Team>)
+
 class FavoritesTeamsTypeConverter {
     @TypeConverter
     fun fromString(value: String): List<Team>{

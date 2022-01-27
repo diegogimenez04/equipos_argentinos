@@ -1,28 +1,23 @@
 package com.example.equiposargentinos.main
 
-import android.app.SearchManager
-import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.equiposargentinos.*
-import com.example.equiposargentinos.login.LoginActivity
-import com.example.equiposargentinos.login.LoginViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+const val SHARED_PREFS = "sharedPrefs"
+const val PREF_LIST = "prefList"
 
 class MainActivity : AppCompatActivity(),
     ListFragment.TeamSelectListener, ListFragment.FavSelectListener,
     FavoritesFragment.TeamSelectListener{
 
-    private lateinit var favList: MutableList<Team>
     lateinit var viewModel: MainViewModel
+    lateinit var prefTeam: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +31,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onFavSelected(viewModel: MainViewModel) {
-        favList = viewModel.favTeams.value ?: favList
+    }
+
+    fun onGoToFavoriteSelected() {
+        findNavController(R.id.main_navigation_container)
+            .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment())
     }
 
     override fun onFavTeamSelected(team: Team) {
@@ -44,24 +43,26 @@ class MainActivity : AppCompatActivity(),
             .navigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(team))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
+    fun saveFavorites(teams: ArrayList<Team>) {
+        val gson = Gson().toJson(teams)
+        val sharedPreferences = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(PREF_LIST, gson)
+        editor.apply()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
-        if (itemId == R.id.btn_logout){
-            val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-            viewModel.logout()
-            startActivity(Intent(this, LoginActivity::class.java))
-        } else if (itemId == R.id.btn_fav) {
-            if (::favList.isInitialized && favList.isNotEmpty()){
-                findNavController(R.id.main_navigation_container)
-                    .navigate(ListFragmentDirections.actionListFragmentToFavoritesFragment(favList.toTypedArray()))
-            } else
-                Toast.makeText(this, "No favorites teams", Toast.LENGTH_SHORT).show()
-        }
-        return super.onOptionsItemSelected(item)
+    fun loadFavorite(): ArrayList<Team>? {
+        val sharedPref = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
+        prefTeam = sharedPref.getString(PREF_LIST, "") ?: ""
+        val listType = object:TypeToken<ArrayList<Team>>(){}.type
+        return Gson().fromJson(prefTeam, listType)
+    }
+
+    fun wipeFavorites() {
+        val sharedPreferences = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+        Log.d("Shared","Data wiped")
     }
 }

@@ -3,38 +3,28 @@ package com.example.equiposargentinos
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
+import android.view.*
 import android.widget.ProgressBar
-import androidx.core.view.get
-import androidx.lifecycle.ViewModel
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.equiposargentinos.api.WorkerUtils
+import com.example.equiposargentinos.login.LoginActivity
+import com.example.equiposargentinos.login.LoginViewModel
+import com.example.equiposargentinos.main.MainActivity
 import com.example.equiposargentinos.main.MainViewModel
 import com.example.equiposargentinos.main.MainViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import java.lang.ClassCastException
 
 class ListFragment : Fragment() {
 
     private lateinit var firebaseDatabase: DatabaseReference
-    private lateinit var auth: FirebaseAuth
-    private lateinit var currentUser : FirebaseUser
     lateinit var viewModel: MainViewModel
     private lateinit var teamSelectListener: TeamSelectListener
     private lateinit var favSelectListener: FavSelectListener
+    lateinit var favTeams: ArrayList<Team>
 
     interface TeamSelectListener {
         fun onTeamSelected(team: Team)
@@ -42,6 +32,11 @@ class ListFragment : Fragment() {
 
     interface FavSelectListener {
         fun onFavSelected(viewModel: MainViewModel)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onAttach(context: Context) {
@@ -65,10 +60,6 @@ class ListFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
-        firebaseDatabase = Firebase.database.reference
-        auth = Firebase.auth
-        currentUser = auth.currentUser!!
-
         val fbRecycler = rootView.findViewById<RecyclerView>(R.id.fb_recycler)
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
 
@@ -78,11 +69,11 @@ class ListFragment : Fragment() {
         viewModel = ViewModelProvider(this,
             MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
 
-        /*if (Intent.ACTION_SEARCH == requireActivity().intent.action) {
+        if (Intent.ACTION_SEARCH == requireActivity().intent.action) {
             requireActivity().intent.getStringExtra(SearchManager.QUERY)?.also { query ->
                 doMySearch(query)
             }
-        }*/
+        }
 
         WorkerUtils.scheduleSynchronization(requireActivity())
 
@@ -103,37 +94,57 @@ class ListFragment : Fragment() {
         return rootView
     }
 
-    private fun addFavoriteToDB(team: Team, user: FirebaseUser){
-        firebaseDatabase.child("users").child(user.uid)
-            .child("teams").setValue(team)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
     }
 
-    private fun handleFavorite(team: Team): Boolean {
-        var isFav = false
-        val favTms = viewModel.favTeams.value
-        if (favTms != null) {
-            isFav = checkFavs(team, favTms)
-            if (!isFav) {
-                viewModel.addFavTeam(team)
-                addFavoriteToDB(team, currentUser)
-            } else {
-                viewModel.substractFromFav(team)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        if (itemId == R.id.btn_logout){
+            val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+            viewModel.logout()
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+        } else if (itemId == R.id.btn_fav) {
+            (activity as MainActivity).onGoToFavoriteSelected()
+        } else if (itemId == R.id.btn_search) {
+            //doMySearch("Aldosi")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun handleFavorite(team: Team) {
+        if(::favTeams.isInitialized){
+            // If initialized I check that it is not duplicated
+            if (!duplicated(team)){
+                favTeams.add(team)
+                (activity as MainActivity).saveFavorites(favTeams)
             }
         } else {
-            viewModel.addFavTeam(team)
-            addFavoriteToDB(team, currentUser)
-        }
-        return isFav
-    }
-
-    private fun checkFavs(team: Team, favTms: MutableList<Team>): Boolean {
-        var isFav = false
-        for (i in favTms) {
-            if (i == team && !isFav) {
-                isFav = true
+            // If its not initialized, I check a previous initialization and if it is duplicated
+            if ((activity as MainActivity).loadFavorite() != null) {
+                favTeams = (activity as MainActivity).loadFavorite()!!
+                if (!duplicated(team)){
+                    favTeams.add(team)
+                    (activity as MainActivity).saveFavorites(favTeams)
+                }
+            }
+            // If it was not initialized ever then I initialize it
+            else{
+                favTeams = arrayListOf()
+                favTeams.add(team)
+                (activity as MainActivity).saveFavorites(favTeams)
             }
         }
-        return isFav
+    }
+
+    private fun duplicated(team: Team): Boolean {
+        for (i in favTeams) {
+            if (team == i) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun handleEmptyView(it: MutableList<Team>, rootView: View) {
