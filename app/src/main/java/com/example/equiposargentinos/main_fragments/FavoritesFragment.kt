@@ -40,7 +40,7 @@ class FavoritesFragment : Fragment() {
         val fbRecycler = rootView.findViewById<RecyclerView>(R.id.fb_recycler)
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
 
-        val adapter = FbAdapter()
+        val adapter = FbAdapter(requireContext())
         fbRecycler.adapter = adapter
 
         var favList = (activity as MainActivity).loadFavorite()

@@ -1,11 +1,10 @@
 package com.example.equiposargentinos
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +15,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.equiposargentinos.databinding.ListItemBinding
 import com.example.equiposargentinos.main.MainActivity
-import kotlinx.coroutines.currentCoroutineContext
-import kotlin.coroutines.coroutineContext
 
 val TAG = FbAdapter::class.java.simpleName
-class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
+class FbAdapter(private val context: Context): ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
 
     companion object DiffCallBack : DiffUtil.ItemCallback<Team>() {
         override fun areItemsTheSame(oldItem: Team, newItem: Team): Boolean {
@@ -37,7 +34,7 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FbViewHolder {
         val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context))
-        return FbViewHolder(binding)
+        return FbViewHolder(binding, context)
     }
 
     override fun onBindViewHolder(holder: FbViewHolder, position: Int) {
@@ -45,8 +42,9 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
         holder.bind(team)
     }
 
-    inner class FbViewHolder(private val binding: ListItemBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class FbViewHolder(private val binding: ListItemBinding, val context: Context): RecyclerView.ViewHolder(binding.root) {
         fun bind(team: Team) {
+            context is MainActivity
             binding.lblName.text = team.strTeam
             binding.lblAbrv.text = team.strTeamShort
 
@@ -85,8 +83,13 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
             }
 
             val favButton = binding.btnFav
-            if (team.pref) favButton.setImageResource(R.drawable.ic_fav)
-            else favButton.setImageResource(R.drawable.ic_unfav)
+            val favList = (context as MainActivity).loadFavorite()
+            if (!favList.isNullOrEmpty() && favList.contains(team)){
+                favButton.setImageResource(R.drawable.ic_fav)
+            } else {
+                favButton.setImageResource(R.drawable.ic_unfav)
+            }
+
 
             binding.btnFav.setOnClickListener {
                 if (::onFavClickListener.isInitialized){

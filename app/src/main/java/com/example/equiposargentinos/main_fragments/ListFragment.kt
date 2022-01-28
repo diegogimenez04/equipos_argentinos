@@ -75,7 +75,7 @@ class ListFragment : Fragment() {
 
         fbRecycler = rootView.findViewById(R.id.fb_recycler)
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
-        adapter = FbAdapter()
+        adapter = FbAdapter(requireContext())
         fbRecycler.adapter = adapter
 
         adapter.onItemClickListener = {team ->
