@@ -1,7 +1,7 @@
 # Equipos Argentinos
 
-Equipos Argentinos es una aplicacion que permite ver los equipos Argentinos actuales, ver su pagina web en caso de tener y ademas añadirlo como favorito (guardandolo localmente).
-Consiste en un login basico donde al entrar, se figuran los equipos Argentinos actuales y pueden abrirse, buscar por nombre del equipo y hasta incluso añadirse a una lista de equipos favoritos
+Equipos Argentinos is an app that allows to see the current Argentinian teams, we can go to the teams webpage, see where the stadium is in case it has one and it can be added to favorites (locally).
+It consists on a basic login that when it is accessed the teams are displayed, so that they can be added as favorites, searched by name or even enter a detailed view of each one.
 
 ## Packages
 
