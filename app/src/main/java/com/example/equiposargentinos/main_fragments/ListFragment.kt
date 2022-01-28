@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.equiposargentinos.FbAdapter
 import com.example.equiposargentinos.R
 import com.example.equiposargentinos.Team
+import com.example.equiposargentinos.api.ApiResponseStatus
 import com.example.equiposargentinos.api.WorkerUtils
 import com.example.equiposargentinos.login.LoginActivity
 import com.example.equiposargentinos.login.LoginViewModel
@@ -67,30 +68,15 @@ class ListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        searchList = mutableListOf()
+        WorkerUtils.scheduleSynchronization(requireActivity())
+
         val rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
         fbRecycler = rootView.findViewById(R.id.fb_recycler)
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
-
         adapter = FbAdapter()
         fbRecycler.adapter = adapter
-
-        viewModel = ViewModelProvider(this,
-            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
-
-        searchList = mutableListOf()
-
-        viewModel.searchList.observe(requireActivity()) {
-            searchList = it
-        }
-
-        if (Intent.ACTION_SEARCH == requireActivity().intent.action) {
-            requireActivity().intent.getStringExtra(SearchManager.QUERY)?.also { query ->
-                doMySearch(query)
-            }
-        }
-
-        WorkerUtils.scheduleSynchronization(requireActivity())
 
         adapter.onItemClickListener = {team ->
             teamSelectListener.onTeamSelected(team)
@@ -99,6 +85,23 @@ class ListFragment : Fragment() {
         adapter.onFavClickListener = { team ->
             handleFavorite(team)
             favSelectListener.onFavSelected(viewModel)
+        }
+
+        viewModel = ViewModelProvider(this,
+            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+
+        viewModel.searchList.observe(requireActivity()) {
+            searchList = it
+            adapter.submitList(searchList)
+        }
+
+        viewModel.status.observe(requireActivity()) {
+            val progressBar = rootView.findViewById<ProgressBar>(R.id.pb_list)
+            if (it == ApiResponseStatus.DONE){
+                progressBar.visibility = View.GONE
+            } else if (it == ApiResponseStatus.LOADING) {
+                progressBar.visibility = View.VISIBLE
+            }
         }
 
         viewModel.fbList.observe(viewLifecycleOwner) {
@@ -112,20 +115,23 @@ class ListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_menu, menu)
+        handleSearch(menu)
+    }
 
+    private fun handleSearch(menu: Menu){
         val searchItem = menu.findItem(R.id.btn_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.queryHint = "Search View Hint"
+        searchView.queryHint = getString(R.string.search_hint)
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 doMySearch(newText)
-                adapter.submitList(searchList)
-                return false
+                return true
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
+                doMySearch(query)
                 return false
             }
 
@@ -140,8 +146,6 @@ class ListFragment : Fragment() {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
         } else if (itemId == R.id.btn_fav) {
             (activity as MainActivity).onGoToFavoriteSelected()
-        } else if (itemId == R.id.btn_search) {
-
         }
         return super.onOptionsItemSelected(item)
     }

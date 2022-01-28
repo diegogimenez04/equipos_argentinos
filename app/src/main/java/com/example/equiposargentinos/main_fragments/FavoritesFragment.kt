@@ -43,8 +43,7 @@ class FavoritesFragment : Fragment() {
         val adapter = FbAdapter()
         fbRecycler.adapter = adapter
 
-        val favList = (activity as MainActivity).loadFavorite()
-
+        var favList = (activity as MainActivity).loadFavorite()
         adapter.submitList(favList)
 
         adapter.onItemClickListener = {team ->
@@ -52,9 +51,54 @@ class FavoritesFragment : Fragment() {
         }
 
         adapter.onFavClickListener = {team ->
-            Toast.makeText(requireContext(), "Borrar", Toast.LENGTH_SHORT).show()
+            favList = handleFavorite(team, favList)
         }
 
         return rootView
     }
+
+    private fun handleFavorite(team: Team, favTeams: ArrayList<Team>?): ArrayList<Team> {
+        var favReturn = arrayListOf<Team>()
+        if(favTeams != null){
+            // If initialized I check that it is not duplicated
+            if (!duplicated(team, favTeams)){
+                favTeams.add(team)
+                (activity as MainActivity).saveFavorites(favTeams)
+            } else {
+                favTeams.remove(team)
+                (activity as MainActivity).saveFavorites(favTeams)
+            }
+            return favTeams
+        }
+        else {
+            // If its not initialized, I check a previous initialization and if it is duplicated
+            if ((activity as MainActivity).loadFavorite() != null) {
+                favReturn = (activity as MainActivity).loadFavorite()!!
+                if (!duplicated(team, favReturn)){
+                    favReturn.add(team)
+
+                    (activity as MainActivity).saveFavorites(favReturn)
+                } else {
+                    favReturn.remove(team)
+                    (activity as MainActivity).saveFavorites(favReturn)
+                }
+            }
+            // If it was not initialized ever then I initialize it
+            else{
+                favReturn.add(team)
+                (activity as MainActivity).saveFavorites(favReturn)
+            }
+            return favReturn
+        }
+    }
+
+    private fun duplicated(team: Team, favTeams: ArrayList<Team>): Boolean {
+        for (i in favTeams) {
+            if (team == i) {
+                return true
+            }
+        }
+        return false
+    }
+
 }

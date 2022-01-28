@@ -54,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="28dp"
+                android:textColor="@color/link"
                 android:text="@string/toca_aqui_para_acceder_a_la_pagina_web"
                 android:textSize="16sp" />
 
@@ -62,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120sp"
                 android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
                 android:contentDescription="@string/stadium_image"
                 tools:src="@color/black" />
 
@@ -69,21 +71,19 @@
                 android:id="@+id/lbl_stadium_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:layout_marginTop="24dp"
                 android:paddingStart="28dp"
                 android:textSize="16sp"
                 tools:text="Estadio Julio Cesar Villagra" />
 
-            <!--xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"-->
-
             <TextView
                 android:id="@+id/lbl_stadium_loc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="5dp"
                 android:paddingStart="28dp"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 tools:text="Queda en Santiago del estero" />
 
@@ -107,6 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textColor="@color/black"
                 android:paddingStart="28dp"
                 android:textSize="16sp"
                 tools:text="Capacidad de 70000 personas" />
@@ -117,9 +118,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25dp"
-                android:backgroundTint="@color/green"
+                android:backgroundTint="@color/purple_500"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+                app:cardElevation="8dp"
+                android:layout_marginBottom="16dp">
 
                 <TextView
                     android:layout_width="match_parent"

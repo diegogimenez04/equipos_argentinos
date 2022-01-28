@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity(),
     ListFragment.TeamSelectListener, ListFragment.FavSelectListener,
     FavoritesFragment.TeamSelectListener{
 
-    lateinit var viewModel: MainViewModel
-    lateinit var prefTeam: String
+    private lateinit var viewModel: MainViewModel
+    private lateinit var prefTeam: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

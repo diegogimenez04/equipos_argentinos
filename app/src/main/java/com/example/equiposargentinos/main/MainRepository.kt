@@ -26,7 +26,6 @@ class MainRepository(private val database: FbDatabase, private val userDatabase:
 
     suspend fun fetchTeamsWithName(name: String): MutableList<Team> {
         return withContext(Dispatchers.IO) {
-            Log.d("Query", database.fbDao.getTeamsByName(name).toString())
             database.fbDao.getTeamsByName(name)
         }
     }
