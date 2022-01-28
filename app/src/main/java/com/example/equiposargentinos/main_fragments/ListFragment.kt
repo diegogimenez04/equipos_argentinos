@@ -1,15 +1,22 @@
-package com.example.equiposargentinos
+package com.example.equiposargentinos.main_fragments
 
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Adapter
 import android.widget.ProgressBar
+import android.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.equiposargentinos.FbAdapter
+import com.example.equiposargentinos.R
+import com.example.equiposargentinos.Team
 import com.example.equiposargentinos.api.WorkerUtils
 import com.example.equiposargentinos.login.LoginActivity
 import com.example.equiposargentinos.login.LoginViewModel
@@ -20,11 +27,13 @@ import com.google.firebase.database.DatabaseReference
 
 class ListFragment : Fragment() {
 
-    private lateinit var firebaseDatabase: DatabaseReference
+    private lateinit var searchList: MutableList<Team>
     lateinit var viewModel: MainViewModel
     private lateinit var teamSelectListener: TeamSelectListener
     private lateinit var favSelectListener: FavSelectListener
     lateinit var favTeams: ArrayList<Team>
+    lateinit var adapter: FbAdapter
+    private lateinit var fbRecycler: RecyclerView
 
     interface TeamSelectListener {
         fun onTeamSelected(team: Team)
@@ -60,14 +69,20 @@ class ListFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_list, container, false)
 
-        val fbRecycler = rootView.findViewById<RecyclerView>(R.id.fb_recycler)
+        fbRecycler = rootView.findViewById(R.id.fb_recycler)
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
 
-        val adapter = FbAdapter()
+        adapter = FbAdapter()
         fbRecycler.adapter = adapter
 
         viewModel = ViewModelProvider(this,
             MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+
+        searchList = mutableListOf()
+
+        viewModel.searchList.observe(requireActivity()) {
+            searchList = it
+        }
 
         if (Intent.ACTION_SEARCH == requireActivity().intent.action) {
             requireActivity().intent.getStringExtra(SearchManager.QUERY)?.also { query ->
@@ -97,6 +112,24 @@ class ListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_menu, menu)
+
+        val searchItem = menu.findItem(R.id.btn_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.queryHint = "Search View Hint"
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                doMySearch(newText)
+                adapter.submitList(searchList)
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -108,7 +141,7 @@ class ListFragment : Fragment() {
         } else if (itemId == R.id.btn_fav) {
             (activity as MainActivity).onGoToFavoriteSelected()
         } else if (itemId == R.id.btn_search) {
-            //doMySearch("Aldosi")
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -119,6 +152,9 @@ class ListFragment : Fragment() {
             if (!duplicated(team)){
                 favTeams.add(team)
                 (activity as MainActivity).saveFavorites(favTeams)
+            } else {
+                favTeams.remove(team)
+                (activity as MainActivity).saveFavorites(favTeams)
             }
         } else {
             // If its not initialized, I check a previous initialization and if it is duplicated
@@ -126,6 +162,10 @@ class ListFragment : Fragment() {
                 favTeams = (activity as MainActivity).loadFavorite()!!
                 if (!duplicated(team)){
                     favTeams.add(team)
+
+                    (activity as MainActivity).saveFavorites(favTeams)
+                } else {
+                    favTeams.remove(team)
                     (activity as MainActivity).saveFavorites(favTeams)
                 }
             }

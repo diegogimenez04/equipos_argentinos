@@ -6,6 +6,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.equiposargentinos.*
+import com.example.equiposargentinos.main_fragments.FavoritesFragment
+import com.example.equiposargentinos.main_fragments.FavoritesFragmentDirections
+import com.example.equiposargentinos.main_fragments.ListFragment
+import com.example.equiposargentinos.main_fragments.ListFragmentDirections
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

@@ -1,6 +1,5 @@
-package com.example.equiposargentinos
+package com.example.equiposargentinos.main_fragments
 
-import android.app.SearchManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,9 +19,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import android.content.Intent
 import android.location.Geocoder
-import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
+import com.example.equiposargentinos.R
+import com.example.equiposargentinos.Team
 import java.lang.Exception
 import java.util.*
 

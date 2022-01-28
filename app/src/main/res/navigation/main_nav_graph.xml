@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.example.equiposargentinos.ListFragment"
+        android:name="com.example.equiposargentinos.main_fragments.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list" >
         <action
@@ -19,13 +19,13 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.equiposargentinos.DetailFragment"
+        android:name="com.example.equiposargentinos.main_fragments.DetailFragment"
         android:label="DetailFragment">
         <argument android:name="team" app:argType="com.example.equiposargentinos.Team"/>
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.example.equiposargentinos.FavoritesFragment"
+        android:name="com.example.equiposargentinos.main_fragments.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
         <!--<argument android:name="favList" app:argType="com.example.equiposargentinos.Team[]" />-->

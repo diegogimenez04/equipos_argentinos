@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.equiposargentinos.databinding.ListItemBinding
+import com.example.equiposargentinos.main.MainActivity
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -39,7 +40,6 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
         return FbViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: FbViewHolder, position: Int) {
         val team = getItem(position)
         holder.bind(team)
@@ -47,9 +47,6 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
 
     inner class FbViewHolder(private val binding: ListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(team: Team) {
-            val favImg = binding.btnFav
-            if (team.pref) favImg.setImageResource(R.drawable.ic_fav)
-            else favImg.setImageResource(R.drawable.ic_unfav)
             binding.lblName.text = team.strTeam
             binding.lblAbrv.text = team.strTeamShort
 
@@ -87,11 +84,15 @@ class FbAdapter: ListAdapter<Team, FbAdapter.FbViewHolder>(DiffCallBack) {
                     Log.d(TAG, "onItemClickListener not initialized")
             }
 
+            val favButton = binding.btnFav
+            if (team.pref) favButton.setImageResource(R.drawable.ic_fav)
+            else favButton.setImageResource(R.drawable.ic_unfav)
+
             binding.btnFav.setOnClickListener {
                 if (::onFavClickListener.isInitialized){
                     team.pref = !team.pref
-                    if (team.pref) Log.d(TAG, "Added to favorites")
-                    else Log.d(TAG, "Removed to favorites")
+                    if (team.pref) favButton.setImageResource(R.drawable.ic_fav)
+                    else favButton.setImageResource(R.drawable.ic_unfav)
                     onFavClickListener(team)
                 } else
                     Log.d(TAG, "onFavClickListener not initialized")

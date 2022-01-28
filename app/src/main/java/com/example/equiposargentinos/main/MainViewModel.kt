@@ -68,7 +68,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     }
 
-    fun reloadTeamsWithName(name: String){
+    fun reloadTeamsWithName(name: String) {
         viewModelScope.launch {
             _searchList.value = repository.fetchTeamsWithName(name)
         }

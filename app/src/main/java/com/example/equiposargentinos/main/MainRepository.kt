@@ -1,5 +1,6 @@
 package com.example.equiposargentinos.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.equiposargentinos.Team
 import com.example.equiposargentinos.User
@@ -25,6 +26,7 @@ class MainRepository(private val database: FbDatabase, private val userDatabase:
 
     suspend fun fetchTeamsWithName(name: String): MutableList<Team> {
         return withContext(Dispatchers.IO) {
+            Log.d("Query", database.fbDao.getTeamsByName(name).toString())
             database.fbDao.getTeamsByName(name)
         }
     }
