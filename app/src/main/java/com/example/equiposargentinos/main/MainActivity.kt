@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        viewModel.favTeams.observe(this) {
+            saveFavorites(it)
+        }
     }
 
     override fun onTeamSelected(team: Team) {
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity(),
             .navigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(team))
     }
 
-    fun saveFavorites(teams: ArrayList<Team>) {
+    fun saveFavorites(teams: MutableList<Team>) {
         val gson = Gson().toJson(teams)
         val sharedPreferences = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
         val editor = sharedPreferences.edit()

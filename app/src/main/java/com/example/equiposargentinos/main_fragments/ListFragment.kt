@@ -32,7 +32,6 @@ class ListFragment : Fragment() {
     lateinit var viewModel: MainViewModel
     private lateinit var teamSelectListener: TeamSelectListener
     private lateinit var favSelectListener: FavSelectListener
-    lateinit var favTeams: ArrayList<Team>
     lateinit var adapter: FbAdapter
     private lateinit var fbRecycler: RecyclerView
 
@@ -82,13 +81,13 @@ class ListFragment : Fragment() {
             teamSelectListener.onTeamSelected(team)
         }
 
-        adapter.onFavClickListener = { team ->
-            handleFavorite(team)
+        viewModel = ViewModelProvider(requireActivity(),
+            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
+
+        adapter.onFavClickListener = { team, btnFav ->
+            viewModel.handleFavorite(team, btnFav)
             favSelectListener.onFavSelected(viewModel)
         }
-
-        viewModel = ViewModelProvider(this,
-            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
 
         viewModel.searchList.observe(requireActivity()) {
             searchList = it
@@ -148,47 +147,6 @@ class ListFragment : Fragment() {
             (activity as MainActivity).onGoToFavoriteSelected()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun handleFavorite(team: Team) {
-        if(::favTeams.isInitialized){
-            // If initialized I check that it is not duplicated
-            if (!duplicated(team)){
-                favTeams.add(team)
-                (activity as MainActivity).saveFavorites(favTeams)
-            } else {
-                favTeams.remove(team)
-                (activity as MainActivity).saveFavorites(favTeams)
-            }
-        } else {
-            // If its not initialized, I check a previous initialization and if it is duplicated
-            if ((activity as MainActivity).loadFavorite() != null) {
-                favTeams = (activity as MainActivity).loadFavorite()!!
-                if (!duplicated(team)){
-                    favTeams.add(team)
-
-                    (activity as MainActivity).saveFavorites(favTeams)
-                } else {
-                    favTeams.remove(team)
-                    (activity as MainActivity).saveFavorites(favTeams)
-                }
-            }
-            // If it was not initialized ever then I initialize it
-            else{
-                favTeams = arrayListOf()
-                favTeams.add(team)
-                (activity as MainActivity).saveFavorites(favTeams)
-            }
-        }
-    }
-
-    private fun duplicated(team: Team): Boolean {
-        for (i in favTeams) {
-            if (team == i) {
-                return true
-            }
-        }
-        return false
     }
 
     private fun handleEmptyView(it: MutableList<Team>, rootView: View) {

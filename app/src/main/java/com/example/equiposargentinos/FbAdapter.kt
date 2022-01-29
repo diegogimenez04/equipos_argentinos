@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.ImageViewTarget
 import com.bumptech.glide.request.target.Target
 import com.example.equiposargentinos.databinding.ListItemBinding
 import com.example.equiposargentinos.main.MainActivity
@@ -30,7 +32,7 @@ class FbAdapter(private val context: Context): ListAdapter<Team, FbAdapter.FbVie
     }
 
     lateinit var onItemClickListener: (Team) -> Unit
-    lateinit var onFavClickListener: (Team) -> Unit
+    lateinit var onFavClickListener: (Team, ImageView) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FbViewHolder {
         val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -90,13 +92,11 @@ class FbAdapter(private val context: Context): ListAdapter<Team, FbAdapter.FbVie
                 favButton.setImageResource(R.drawable.ic_unfav)
             }
 
-
             binding.btnFav.setOnClickListener {
                 if (::onFavClickListener.isInitialized){
                     team.pref = !team.pref
-                    if (team.pref) favButton.setImageResource(R.drawable.ic_fav)
-                    else favButton.setImageResource(R.drawable.ic_unfav)
-                    onFavClickListener(team)
+                    onFavClickListener(team, favButton)
+                    binding.executePendingBindings()
                 } else
                     Log.d(TAG, "onFavClickListener not initialized")
             }

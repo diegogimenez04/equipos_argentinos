@@ -1,9 +1,7 @@
 package com.example.equiposargentinos.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.equiposargentinos.Team
-import com.example.equiposargentinos.User
 import com.example.equiposargentinos.api.FbJsonResponse
 import com.example.equiposargentinos.api.service
 import com.example.equiposargentinos.database.FbDatabase
@@ -37,7 +35,7 @@ class MainRepository(private val database: FbDatabase, private val userDatabase:
 
         for (team in teams){
             val teamId = team.idTeam
-            val nombre = team.strTeam ?: ""
+            val name = team.strTeam ?: ""
             val stadiumName = team.strStadium ?: ""
             val stadiumLoc = team.strStadiumLocation ?: ""
             val stadiumCap = team.intStadiumCapacity ?: 0
@@ -46,7 +44,7 @@ class MainRepository(private val database: FbDatabase, private val userDatabase:
             val teamAbrv = team.strTeamShort ?: ""
             val teamWebsite = team.strWebsite ?: ""
 
-            fbList.add(Team(teamId, nombre, teamAbrv, stadiumName, stadiumImg, stadiumLoc,
+            fbList.add(Team(teamId, name, teamAbrv, stadiumName, stadiumImg, stadiumLoc,
                         stadiumCap, teamWebsite,teamBadge, false))
         }
 
