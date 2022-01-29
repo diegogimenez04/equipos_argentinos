@@ -171,6 +171,7 @@ class DetailFragment : Fragment(), OnMapReadyCallback {
             }
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "No internet connection", Toast.LENGTH_SHORT).show()
+            mapView.visibility = View.GONE
         }
 
     }

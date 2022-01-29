@@ -1,15 +1,11 @@
 package com.example.equiposargentinos.main_fragments
 
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.Adapter
 import android.widget.ProgressBar
 import android.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,15 +20,14 @@ import com.example.equiposargentinos.login.LoginViewModel
 import com.example.equiposargentinos.main.MainActivity
 import com.example.equiposargentinos.main.MainViewModel
 import com.example.equiposargentinos.main.MainViewModelFactory
-import com.google.firebase.database.DatabaseReference
 
 class ListFragment : Fragment() {
 
     private lateinit var searchList: MutableList<Team>
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
     private lateinit var teamSelectListener: TeamSelectListener
     private lateinit var favSelectListener: FavSelectListener
-    lateinit var adapter: FbAdapter
+    private lateinit var adapter: FbAdapter
     private lateinit var fbRecycler: RecyclerView
 
     interface TeamSelectListener {
@@ -76,13 +71,12 @@ class ListFragment : Fragment() {
         fbRecycler.layoutManager = LinearLayoutManager(requireContext())
         adapter = FbAdapter(requireContext())
         fbRecycler.adapter = adapter
+        viewModel = ViewModelProvider(requireActivity(),
+            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
 
         adapter.onItemClickListener = {team ->
             teamSelectListener.onTeamSelected(team)
         }
-
-        viewModel = ViewModelProvider(requireActivity(),
-            MainViewModelFactory(requireActivity().application))[MainViewModel::class.java]
 
         adapter.onFavClickListener = { team, btnFav ->
             viewModel.handleFavorite(team, btnFav)
@@ -149,8 +143,8 @@ class ListFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun handleEmptyView(it: MutableList<Team>, rootView: View) {
-        if (it.isEmpty()) rootView.findViewById<ProgressBar>(R.id.pb_list).visibility = View.VISIBLE
+    private fun handleEmptyView(it: MutableList<Team>?, rootView: View) {
+        if (it.isNullOrEmpty()) rootView.findViewById<ProgressBar>(R.id.pb_list).visibility = View.VISIBLE
         else rootView.findViewById<ProgressBar>(R.id.pb_list).visibility = View.GONE
     }
 

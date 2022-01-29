@@ -10,11 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ProgressBar
-        android:id="@+id/pb_list"
+    <TextView
+        android:id="@+id/tv_no_fav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:gravity="center"
+        android:textSize="48sp"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:text="@string/no_tienes_favoritos"/>
 
 </FrameLayout>

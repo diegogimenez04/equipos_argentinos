@@ -22,4 +22,5 @@
     <string name="fav_list">Fav List</string>
     <string name="search">Search</string>
     <string name="search_hint">Busca un equipo</string>
+    <string name="no_tienes_favoritos">No tienes favoritos...</string>
 </resources>

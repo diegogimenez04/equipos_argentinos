@@ -2,7 +2,6 @@ package com.example.equiposargentinos.main
 
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
-import android.service.autofill.UserData
 import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
@@ -18,10 +17,9 @@ import com.example.equiposargentinos.database.getDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.net.UnknownHostException
 
-val TAG = MainViewModel::class.java.simpleName
+val TAG: String = MainViewModel::class.java.simpleName
 class MainViewModel(application: Application): AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val userDatabase = Room.databaseBuilder(
@@ -44,7 +42,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     init {
         reloadTeams()
-        Log.d("Persistence", "Teams reloaded")
         reloadUser()
     }
 
@@ -61,25 +58,20 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun handleFavorite(team: Team, btnFav: ImageView) {
         viewModelScope.launch {
             val tempList = arrayListOf<Team>()
-            Log.d("Persistence", "Templist before: $tempList")
             if (!_favTeams.value.isNullOrEmpty()) {
                 tempList.addAll(_favTeams.value!!)
-                Log.d("Persistence", "Templist: $tempList")
                 // If initialized I check that it is not duplicated
                 if (duplicated(team, tempList)) {
-                    Log.d("Persistence", "Deleting: " + team.strTeam)
                     tempList.remove(team)
                     _favTeams.value = tempList
                     saveFav(false, btnFav)
                 } else {
-                    Log.d("Persistence", "Adding: " + team.strTeam)
                     tempList.add(team)
                     _favTeams.value = tempList
                     saveFav(true, btnFav)
                 }
             } else if (_favTeams.value.isNullOrEmpty()) {
                 // If its not initialized or is empty I add the items
-                Log.d("Persistence", "Creating: " + team.strTeam)
                 tempList.add(team)
                 _favTeams.value = tempList
                 saveFav(true, btnFav)

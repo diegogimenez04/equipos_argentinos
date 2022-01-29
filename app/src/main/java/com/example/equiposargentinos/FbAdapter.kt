@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.ImageViewTarget
 import com.bumptech.glide.request.target.Target
 import com.example.equiposargentinos.databinding.ListItemBinding
 import com.example.equiposargentinos.main.MainActivity
@@ -85,8 +84,9 @@ class FbAdapter(private val context: Context): ListAdapter<Team, FbAdapter.FbVie
             }
 
             val favButton = binding.btnFav
-            val favList = (context as MainActivity).loadFavorite()
+            val favList = (context as MainActivity).viewModel.favTeams.value
             if (!favList.isNullOrEmpty() && favList.contains(team)){
+                Log.d("Persistence", favList.toString())
                 favButton.setImageResource(R.drawable.ic_fav)
             } else {
                 favButton.setImageResource(R.drawable.ic_unfav)

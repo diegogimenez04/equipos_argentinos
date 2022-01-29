@@ -2,7 +2,6 @@ package com.example.equiposargentinos.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.equiposargentinos.*
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity(),
     ListFragment.TeamSelectListener, ListFragment.FavSelectListener,
     FavoritesFragment.TeamSelectListener{
 
-    private lateinit var viewModel: MainViewModel
+    lateinit var viewModel: MainViewModel
     private lateinit var prefTeam: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity(),
             .navigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(team))
     }
 
-    fun saveFavorites(teams: MutableList<Team>) {
+    private fun saveFavorites(teams: MutableList<Team>) {
         val gson = Gson().toJson(teams)
         val sharedPreferences = this.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -71,6 +70,5 @@ class MainActivity : AppCompatActivity(),
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
-        Log.d("Shared","Data wiped")
     }
 }
